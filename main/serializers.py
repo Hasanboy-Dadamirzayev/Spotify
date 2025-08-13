@@ -18,8 +18,8 @@ class AlbumSerializer(ModelSerializer):
 
 
 class SongsTableSerializer(ModelSerializer):
-
     file = FileField(
+        required=False,  # Fayl ixtiyoriy bo‘lishi uchun
         validators=[FileExtensionValidator(allowed_extensions=['mp3'])]
     )
 
@@ -27,9 +27,9 @@ class SongsTableSerializer(ModelSerializer):
         model = Songs
         fields = "__all__"
 
-    def validate_duration(self, duration):
-        h, m, s = map(int, duration.split(":"))  # "01:02:01" -> 1, 2, 1
-        if timedelta(hours=h, minutes=m, seconds=s) > timedelta(minutes=7):
-            raise ValidationError("Davomiylik 7 daqiqadan oshmasligi kerak")
-        return duration
-
+    def validate_duration(self, value):
+        """Davomiylik 7 daqiqadan oshmasligi kerak."""
+        max_duration = timedelta(minutes=7)
+        if value > max_duration:
+            raise ValidationError("Qo'shiq davomiyligi 7 daqiqadan oshmasligi kerak.")
+        return value

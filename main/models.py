@@ -22,6 +22,7 @@ class Songs(models.Model):
     genre = models.CharField(max_length=255, null=True, blank=True)
     duration = models.DurationField()
     file = models.FileField(upload_to='files/', blank=True, null=True)
+    singer = models.ForeignKey(Singer, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
